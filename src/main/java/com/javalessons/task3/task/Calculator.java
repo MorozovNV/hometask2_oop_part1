@@ -28,28 +28,42 @@ public class Calculator {
         this.interestRate = interestRate;
         this.extraPayment = extraPayment;
         this.rateMonth = interestRate/12;
-        PaymentCalculation(loanAmount);
+        this.payment = PaymentCalculation(loanAmount);
         this.startingBalance = loanAmount;
+        this.endingBalance = loanAmount;
 
     }
 
-    void calculationThisPeriod(){
+    void calculationThisPeriod() {
         month++;
+        startingBalance = endingBalance;
         interest = startingBalance * rateMonth;
         principal = payment + extraPayment - interest;
         endingBalance = startingBalance - principal;
         totalInterest += interest;
     }
 
-    void PaymentCalculation(double pv) {
-        this.payment = (pv * (rateMonth)) / (1 - Math.pow(1 + rateMonth, - 1 * years * 12));
+    void calculationRemainingPeriod() {
+        int monthNow = month;
+        for (int i=0; i < (years*12 - monthNow); i++) {
+            calculationThisPeriod();
+            outCalc();
+        }
     }
 
-    public void outLegend(){
+    public double getPayment() {
+        return payment;
+    }
+
+    double PaymentCalculation(double pv) {
+        return pv * rateMonth / (1 - Math.pow(1 + rateMonth, - 1 * years * 12));
+    }
+
+    public void outLegend() {
         System.out.println("Month | StartingBalance | Payment | Interest | Principal | EndingBalance | TotalInterest |");
     }
 
-    public void outCalc(){
+    public void outCalc() {
         System.out.printf("%d, %15.2f, %12.2f, %8.2f, %8.2f, %15.2f, %15.2f%n", month, startingBalance,
                 payment, interest, principal, endingBalance, totalInterest);
     }
@@ -67,4 +81,5 @@ public class Calculator {
                 ", totalInterest=" + totalInterest +
                 '}';
     }
+
 }
